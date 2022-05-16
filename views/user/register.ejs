@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+  <%- include('../structure/head') %>
+  <body>
+
+    <!-- NavBar -->
+    <%- include('../structure/nav') %>
+    <!-- /END NavBar -->
+    <div class="container">
+      
+      <section class="px-0 py-4" style="background-color: #eee;">
+        
+        <div class="row d-flex justify-content-center align-items-center h-100">
+          <div class="col-lg-12 col-xl-11">
+            <div class="card text-black" style="border-radius: 25px;">
+              <%- include('../structure/messages') %>
+              <div class="card-body p-md-5 pt-md-0">
+                <div class="row justify-content-center">
+                  <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
+    
+                    <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign up</p>
+    
+                    <form method="POST" id="form" class="mx-1 mx-md-4">
+    
+                      <div class="d-flex flex-row align-items-center mb-4">
+                        <i class="fas fa-user fa-lg fa-fw" style="margin-right: 22.5px;"></i>
+
+                        <div class="form-floating form-outline mb-0 pe-2">
+                          <input type="text" class="form-control" id="name" name="name" placeholder="Name" <%if(!!locals.user && !!locals.user.name){%>value="<%=user.name%>"<%}%>>
+                          <label for="name">Name</label>
+                        </div>
+
+                        <div class="form-floating form-outline mb-0">
+                          <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last name" <%if(!!locals.user && !!locals.user.lastName){%>value="<%=user.lastName%>"<%}%>>
+                          <label for="lastName">Last Name</label>
+                        </div>
+
+                      </div>
+                      
+    
+                      <div class="d-flex flex-row align-items-center mb-4">
+                        <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
+                        
+                        <div class="form-floating form-outline flex-fill mb-0">
+                          <input type="email" class="form-control" id="email" name="email" placeholder="Email" <%if(!!locals.user && !!locals.user.email){%>value="<%=user.email%>"<%}%>>
+                          <label for="email">Email</label>
+                        </div>
+
+                      </div>
+    
+                      <div class="d-flex flex-row align-items-center mb-4">
+                        <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
+                        
+                        <div class="form-floating form-outline flex-fill mb-0">
+                          <input type="password" class="form-control" id="password1" name="password1" placeholder="Password">
+                          <label for="password1">Password</label>
+                          <div class="row">
+                            
+                          </div>
+                          <div class="row">
+                            <div class="col-1">
+                              <i class="fa-solid fa-info mx-2 text-info"></i>
+                            </div>
+                            <div class="col p-0">
+                              <small>At least 8 characters long with a number and a letter.</small>
+                            </div>
+                          </div>
+                        </div>
+
+                        
+
+                      </div>
+    
+                      <div class="d-flex flex-row align-items-center mb-4">
+                        <i class="fas fa-key fa-lg me-3 fa-fw"></i>
+                        <div class="form-floating form-outline flex-fill mb-0">
+                          <input type="password" class="form-control" id="password2" name="password2" placeholder="Repeat your password">
+                          <label for="password2">Repeat your password</label>
+                        </div>
+                      </div>
+    
+                      <div class="form-check d-flex justify-content-center mb-5">
+                        <input class="form-check-input me-2" type="checkbox" name="terms" id="terms" required />
+                        <label class="form-check-label" for="terms">
+                          I agree all statements in <a href="#!">Terms of service</a>
+                        </label>
+                      </div>
+    
+                      <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                        <button type="submit" class="btn btn-primary btn-lg">Register</button>
+                      </div>
+    
+                    </form>
+    
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+
+      </section>
+
+
+      <!-- Footer -->
+      <%- include('../structure/footer') %>
+      <!-- /END Footer-->
+    </div>
+
+
+    <%- include('../structure/plugins') %>
+
+    <script>
+
+      $(document).ready(function() {
+
+        $('#form').on('submit', function(event){
+
+          
+          event.preventDefault(); //Prevent Submit
+
+          //Validation
+          var user = {};
+          user.name = $("#name").val().trim();
+          user.lastName = $("#lastName").val().trim();
+          user.email = $("#email").val().trim();
+          user.password1 = $("#password1").val().trim();
+          user.password2 = $("#password2").val().trim();
+          var terms = $("#terms").val();
+
+          var error = 0;
+          var message = "";
+
+          if(!user.name) {
+            message += "Please input your name.<br/>";
+            error++;
+          }
+
+          if(!user.lastName) {
+            message += "Please input your last name.<br/>";
+            error++;
+          }
+
+          if(!user.email) {
+            message += "Please input an email.<br/>";
+            error++;
+          }
+
+          if(!user.password1 || !user.password2) {
+            message += "Please input a valid password.<br/>";
+            error++;
+          }
+
+          if(user.password1 !== user.password2) {
+            message += "Passwords do not match.<br/>";
+            error++;
+          }
+          //PASSWORD VALIDATION
+          else if(!(/^(?=.*[A-Za-z])(?=.*\d)[a-zA-Z\d\w\W]{8,}$/.test(user.password1))) {
+            message += "Password must be at least 8 characters long and contain a number and a letter.<br/>";
+            error++;
+          }
+
+          //SHOW ERROR
+          if(error > 0) {
+            Swal.fire({
+              title: 'Errors Found',
+              html: message,
+              icon: 'warning',
+              showCancelButton: false,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Close'
+            });
+          }
+          //NO ERRORS
+          else {
+            event.currentTarget.submit(); //SUBMIT FORM
+          } 
+
+        });
+
+      });
+
+    </script>
+    
+
+  </body>
+
+</html>

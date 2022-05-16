@@ -1,0 +1,36 @@
+    <!-- NavBar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid" style="max-width:1450px;">
+        <a href="/" class="navbar-brand">PokeRick</a>
+        <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <div class="navbar-nav">
+            <a href="/" class="nav-item nav-link active">Home</a>
+            <a href="/rickAndMorty" class="nav-item nav-link">Rick & Morty</a>
+            <a href="/random" class="nav-item nav-link">Random</a>
+            <a href="<%=locals.config.paths.rootUsers + locals.config.paths.list%>" class="nav-item nav-link">Users List</a>
+          </div>
+          <div class="navbar-nav ms-auto">
+            <%if(!locals.credentials){%>
+              <a href="<%=locals.config.paths.rootUsers + locals.config.paths.login%>" class="nav-item nav-link">Log in</a>
+              <a href="<%=locals.config.paths.rootUsers + locals.config.paths.register%>" class="nav-item nav-link">Register</a>
+            <%} else {%>
+              
+              <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                  <%=credentials.name + " " + credentials.lastName%>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  <li><a class="dropdown-item" href="<%=locals.config.paths.rootUsers + locals.config.paths.profile%>" class="nav-item nav-link" title="Go to your profile">Profile</a></li>
+                  <li><a class="dropdown-item" href="<%=locals.config.paths.rootUsers + locals.config.paths.profile + '#favorites'%>">Favorites</a></li>
+                  <li><a class="dropdown-item" href="<%=locals.config.paths.rootUsers + locals.config.paths.logout%>">Logout</a></li>
+                </ul>
+              </div>
+            <%}%>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <!-- /END NavBar -->

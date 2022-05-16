@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <%- include('structure/head') %>
+  <body>
+
+    <%- include('structure/nav') %>
+
+    <main class="container">
+      <div class="p-5 my-4 bg-light rounded-3">
+        <h1>Welcome!</h1>
+        <p class="lead">Please register or log in to begin creating a list of your favorite Pókemon and Rick & Morty
+          characters!</p>
+        <p><a href="/users/login" class="btn btn-poke btn-lg">Log In</a>
+          <a href="/users/register" class="btn btn-rick btn-lg">Register</a></p>
+      </div>
+      
+      <!-- Footer -->
+      <%- include('structure/footer') %>
+      <!-- /END Footer-->
+    </main>
+
+
+    <%- include('structure/plugins') %>
+    
+
+  </body>
+
+</html>

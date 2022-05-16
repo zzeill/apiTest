@@ -1,0 +1,27 @@
+<!-- Info Success -->
+<% if(locals.success) {%>
+  <div class="alert px-md-5 m-0 pb-0">
+    <div class="px-md-1">
+      <div class="alert alert-success" role="success">
+        <h4 class="alert-heading">Success</h4>
+        <p><%= success %></p>
+      </div>
+    </div>
+  </div>
+<%}%>
+
+<!-- Error Message -->
+<% if(locals.error) {%>
+  <div class="alert px-md-5 m-0 pb-0">
+    <div class="px-md-1">
+      <div class="alert alert-danger" role="error">
+        <h4 class="alert-heading">Error</h4>
+        <p><%=error%></p>
+        <%if(!locals.hideFooter){%>
+          <hr>
+          <p class="mb-0">If this keeps happening, please contact support.</p>
+        <%}%>
+      </div>
+    </div>
+  </div>
+<%}%>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <%- include('./structure/head') %>
+  <body>
+
+    <!-- NavBar -->
+    <%- include('./structure/nav') %>
+    <!-- /END NavBar -->
+    <main class="container">
+      <div class="p-5 my-4 bg-light rounded-3">
+        <h1>Welcome <%=credentials.name.toLowerCase().replace(/\b(\w)/g, s => s.toUpperCase())%>!</h1>
+        <p class="lead">Don't know where to start ? How about uploading a profile picture, seeing some random characters or watching your favorite characters!</p>
+        <p class="lead">If you're feeling alone, check out <a href="/users/list">who else is here</a> on the user list!</p>
+        <p>
+          <a href="/users/profile#photo" class="btn btn-poke btn-lg">Profile</a>
+          <a href="/random" class="btn btn-secondary btn-lg">Random</a>
+          <a href="/users/profile#favorites" class="btn btn-rick btn-lg">Favorites</a></p>
+      </div>
+      
+      <!-- Footer -->
+      <%- include('structure/footer') %>
+      <!-- /END Footer-->
+    </main>
+
+
+    <%- include('./structure/plugins') %>
+
+    <script>
+
+      $(document).ready(function() {
+
+        $('#form').on('submit', function(event){
+
+          
+          event.preventDefault(); //Prevent Submit
+
+          //Validation
+          var user = {};
+          user.name = $("#name").val().trim();
+          user.lastName = $("#lastName").val().trim();
+          user.email = $("#email").val().trim();
+          user.password1 = $("#password1").val().trim();
+          user.password2 = $("#password2").val().trim();
+          var terms = $("#terms").val();
+
+          var error = 0;
+          var message = "";
+
+          if(!user.name) {
+            message += "Please input your name.<br/>";
+            error++;
+          }
+
+          if(!user.lastName) {
+            message += "Please input your last name.<br/>";
+            error++;
+          }
+
+          if(!user.email) {
+            message += "Please input an email.<br/>";
+            error++;
+          }
+
+          if(!user.password1 || !user.password2) {
+            message += "Please input a valid password.<br/>";
+            error++;
+          }
+
+          if(user.password1 !== user.password2) {
+            message += "Passwords do not match.<br/>";
+            error++;
+          }
+          //PASSWORD VALIDATION
+          else if(!(/^(?=.*[A-Za-z])(?=.*\d)[a-zA-Z\d\w\W]{8,}$/.test(user.password1))) {
+            message += "Password must be at least 8 characters long and contain a number and a letter.<br/>";
+            error++;
+          }
+
+          //SHOW ERROR
+          if(error > 0) {
+            Swal.fire({
+              title: 'Errors Found',
+              html: message,
+              icon: 'warning',
+              showCancelButton: false,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Close'
+            });
+          }
+          //NO ERRORS
+          else {
+            event.currentTarget.submit(); //SUBMIT FORM
+          } 
+
+        });
+
+      });
+
+    </script>
+    
+
+  </body>
+
+</html>

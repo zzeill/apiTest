@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <%- include('structure/head') %>
+  <body>
+
+    <!-- NavBar -->
+    <%- include('structure/nav') %>
+    <!-- /END NavBar -->
+    <div class="container">
+      
+      <section class="px-0 py-4 mt-3" style="background-color: #eee;">
+        
+        <div class="row d-flex justify-content-center align-items-center h-100">
+          <div class="col-lg-12 col-xl-11">
+            <div class="alert alert-success mt-3 mx-2" role="alert">
+              <h4 class="alert-heading"><%if(!!locals.messageTitle){%><%=messageTitle%><%}%></h4>
+              <p></p>
+              <hr>
+              <p class="mb-0"><%if(!!locals.message){%><%=message%><%}%> You'll be redirected in a moment... </p>
+            </div>
+          </div>
+        </div>
+        
+
+      </section>
+
+
+      <!-- Footer -->
+      <%- include('structure/footer') %>
+      <!-- /END Footer-->
+    </div>
+
+    <%- include('structure/plugins') %>
+
+  </body>
+
+</html>

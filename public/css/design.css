@@ -1,0 +1,29 @@
+.navbar {
+  background-color: rgb(255,246,8) !important;
+  background: linear-gradient(90deg, rgba(255,246,8,1) 0%, rgba(200,255,0,1) 100%);
+}
+
+.navbar a:not(:hover) {
+  color: black !important;
+  text-shadow: 2px 2px 3px #ffffff;
+  border:1px solid transparent;
+}
+
+.navbar .container-fluid .navbar-nav a:hover {
+color:#d52b1e;
+border:1px solid red ;
+}
+
+.navbar .navbar-brand:hover {
+  color:#d52b1e;
+  text-shadow: 2px 2px 3px #ffffff;
+  border:1px solid transparent ;
+}
+
+.btn-poke {
+  background-color: rgb(255, 243, 8);
+}
+
+.btn-rick {
+  background-color: rgb(162, 255, 0);
+}

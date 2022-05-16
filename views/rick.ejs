@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+  <%- include('./structure/head') %>
+  <body>
+
+    <!-- NavBar -->
+    <%- include('./structure/nav') %>
+    <!-- /END NavBar -->
+    <main class="container">
+      <div class="p-5 my-4 bg-light rounded-3">
+        <h1 class="text-center">Rick & Morty Characters</h1>
+      
+        <div class="container rounded my-4">
+          <div class="row">
+      
+            
+            <div class="row pb-5 mb-4 justify-content-center"">
+              <%if(!!locals.list){var i = 0;
+                list.forEach(function(item) { %>
+
+              <div class="col-lg-3 col-md-6 mb-3 mb-lg-0 pb-5">
+                <!-- Card-->
+                <div class="card shadow-sm border-0 rounded">
+                  <div class="card-body p-0 text-center mt-3"><img src="<%if(item.image){%><%=item.image%><%}%>" alt=""
+                      class="w-75 card-img-top">
+                    <div class="p-4">
+                      <h5 class="mb-0"><%=item.name.toLowerCase().replace(/\b(\w)/g, s => s.toUpperCase())%></h5>
+                      <p class="small text-muted">#<%=item.id%></p>
+
+                      <ul class="list-group">
+                        <li class="list-group-item">
+                          <%if(item.gender){%><%= item.species + " " + item.gender%><%}else{%>Types: <%=item.types[0].type.name%> <%if(item.types.length > 1){%><%=item.types[1].type.name%><%}%><%}%>
+                        </li>
+                        <li class="list-group-item">
+                          <%if(item.gender){%><%="Status: " + item.status%><%} else{%>Weight: <%=item.weight%><%}%>
+                        </li>
+                        <li class="list-group-item">
+                          <%if(item.location){%><%="Location: " + item.location.name%><%} else {%>Ability: <%=item.abilities[0].ability.name%><%}%>
+                        </li>
+                        <li class="list-group-item">Universe: <%if(item.gender){%>Rick & Morty<%} else{%>Pókemon<%}%></li>
+                      </ul>
+
+                      <div>
+                        <button id="<%if(item.gender){%>rick<%}else{%>pokemon<%}%>_<%=item.id%>" type="button" class="btn btn-success favorite mt-3">Add to Favorite</button>
+                      </div>
+   
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+
+              <% }); } else { %>
+                
+                <%}%>
+
+
+                <%if(!!locals.prev){%>
+                <button id="prev_<%=next%>" type="button" class="btn btn-secondary col-md-1 mb-2 me-xl-2 changePage">Previous</button>
+                <%}%>
+                <%if(!!locals.next){%>
+                <button id="next_<%=next%>" type="button" class="btn btn-primary col-md-1 mb-2 changePage">Next</button>
+                <%}%>
+
+          </div>
+        </div>
+      
+      
+      </div>
+      
+      <!-- Footer -->
+      <%- include('./structure/footer') %>
+      <!-- /END Footer-->
+    </main>
+
+
+    <%- include('./structure/plugins') %>
+
+    <script>
+
+      $(document).ready(function() {
+
+        $(".changePage").click(function(event){
+          var page = $(this).attr("id").split("_")[1];
+          window.location.href = "/rickAndMorty/" + page;
+        });
+
+        $(".favorite").click(function(event){
+
+          var char = {};
+          var id = $(this).attr("id");
+          char.serie = id.split("_")[0];
+          char.id = id.split("_")[1];
+ 
+          Swal.fire({
+                title: 'Favorite',
+                text: "Add to your favorites?",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#248afd',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    $.ajax({
+                      url: '<%=locals.config.paths.rootUsers + locals.config.paths.favorites%>',
+                        method: 'POST',
+                        data: { serie : char.serie, idChar : char.id},
+                        success: function (result) {
+                          
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                            });
+                            Toast.fire({
+                                icon: 'success',
+                                title: result.message
+                            });
+                            
+                    
+                        },
+                        error: function (request, msg, error) {
+                            var message = {};
+
+                            try {
+                              message = JSON.parse(request.responseText);
+                            }
+                            catch (err) {
+                              message.error = error;
+                            }
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: `<strong>Error</strong>`,
+                                text: message.error,
+                                //footer: request.responseText,
+                                showCloseButton: false,
+                                showCancelButton: false,
+                                focusConfirm: false,
+                                confirmButtonColor: '#248afd',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'Ok',
+                                cancelButtonText: 'No'
+                            });
+                        }
+                    });
+                }
+            })
+        });
+
+        
+
+      });
+
+    </script>
+    
+
+  </body>
+
+</html>

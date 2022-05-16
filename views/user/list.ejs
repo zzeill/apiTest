@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+  <%- include('../structure/head') %>
+  <body>
+
+    <!-- NavBar -->
+    <%- include('../structure/nav') %>
+    <!-- /END NavBar -->
+    <main class="container">
+      <div class="p-5 my-4 bg-light rounded-3">
+        <h1>User List</h1>
+      
+        <div class="container rounded my-4">
+          <div class="row">
+      
+            
+            <div class="row pb-5 mb-4">
+              <%if(!!locals.list && locals.list.length > 0){
+                list.forEach(function(item) { %>
+              <div class="col-lg-3 col-md-6 mb-3 mb-lg-0 pb-5">
+                <!-- Card-->
+                <div class="card shadow-sm border-0 rounded">
+                  <div class="card-body p-0 text-center mt-3"><img src="<%if(!item.profilePhoto){%>/images/users/noPicture.png<%} else {%>'/images/users/'+item.profilePhoto<%}%>" alt=""
+                      class="w-75 card-img-top">
+                    <div class="p-4">
+                      <h5 class="mb-0"><%=item.name + " " + item.lastName %></h5>
+                      <p class="small text-muted"><%=item.type.toString().toLowerCase().replace(/\b(\w)/g, s => s.toUpperCase())%></p>
+   
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+
+              <% }); } else { %>
+                <%=message%>
+                <%}%>
+
+          </div>
+        </div>
+      
+      
+      </div>
+      
+      <!-- Footer -->
+      <%- include('../structure/footer') %>
+      <!-- /END Footer-->
+    </main>
+
+
+    <%- include('../structure/plugins') %>
+
+    <script>
+
+      $(document).ready(function() {
+
+        $("#delete").click(function(){
+          Swal.fire({
+                title: 'Account Delete',
+                text: "Your account would be terminated if you proceed, this can't be undone.",
+                icon: 'danger',
+                showCancelButton: true,
+                confirmButtonColor: '#248afd',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Delete'
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    $.ajax({
+                      url: '<%=locals.config.paths.rootUsers + locals.config.paths.delete%>',
+                        method: 'POST',
+                        data: { 'delete': true },
+                        success: function (result) {
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                            });
+                            Toast.fire({
+                                icon: 'success',
+                                title: result.message
+                            });
+                            
+                            setTimeout(function () {
+                              window.location.href = "/";
+                            }, 3000);
+                        },
+                        error: function (request, msg, error) {
+                            var message = {};
+
+                            try {
+                              message = JSON.parse(request.responseText);
+                            }
+                            catch (err) {
+                              message.error = error;
+                            }
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: `<strong>Error</strong>`,
+                                text: message.error,
+                                //footer: request.responseText,
+                                showCloseButton: false,
+                                showCancelButton: false,
+                                focusConfirm: false,
+                                confirmButtonColor: '#248afd',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'Ok',
+                                cancelButtonText: 'No'
+                            });
+                        }
+                    });
+                }
+            })
+        });
+
+        $('#update').on('click', function(event){
+
+          //Validation
+          var user = {};
+          user.name = $("#name").val().trim();
+          user.lastName = $("#lastName").val().trim();
+          user.currentPass = $("#currentPass").val().trim();
+          user.newPass1 = $("#newPass1").val().trim();
+          user.newPass2 = $("#newPass1").val().trim();
+          user.profilePhoto = $('#profilePhoto').prop('files')[0];
+
+          var error = 0;
+          var message = "";
+
+          if(!user.name) {
+            message += "Please input your name.<br/>";
+            error++;
+          }
+
+          if(!user.lastName) {
+            message += "Please input your last name.<br/>";
+            error++;
+          }
+
+          if(!!user.currentPass && !user.newPass1 && !user.newPass1) {
+            message += "Please input a new password.<br/>";
+            error++;
+          }
+
+          if(!!user.currentPass && user.newPass1 != user.newPass1) {
+            message += "Passwords do not match.<br/>";
+            error++;
+          }
+          //PASSWORD VALIDATION
+          else if(!!user.currentPass && !(/^(?=.*[A-Za-z])(?=.*\d)[a-zA-Z\d\w\W]{8,}$/.test(user.newPass1))) {
+            message += "Password must be at least 8 characters long and contain a number and a letter.<br/>";
+            error++;
+          }
+
+          //SHOW ERROR
+          if(error > 0) {
+            Swal.fire({
+              title: 'Errors Found',
+              html: message,
+              icon: 'warning',
+              showCancelButton: false,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Close'
+            });
+          }
+          //NO ERRORS
+          else {
+
+            $.ajax({
+              url: '<%=locals.config.paths.rootUsers + locals.config.paths.profile%>',
+              method: 'POST',
+              //contentType: 'application/json',
+              //processData: false,
+              //contentType: false,
+              data: {
+                name : user.name,
+                lastName : user.lastName,
+                currentPass : user.currentPass,
+                newPass1 : user.newPass1,
+                newPass2 : user.newPass2
+              },
+              success: function (result) {
+
+                const Toast = Swal.mixin({
+                  toast: true,
+                  position: 'top-end',
+                  showConfirmButton: false,
+                  timer: 3000,
+                  timerProgressBar: true,
+                  didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                  }
+                });
+                Toast.fire({
+                  icon: 'success',
+                  title: result.message
+                });
+
+                setTimeout(function () {
+                  window.location.reload(1);
+                }, 3000);
+              },
+              error: function (request, msg, error) {
+
+                var message = {};
+
+                try {
+                  message = JSON.parse(request.responseText);
+                }
+                catch(err) {
+                  message.error = error;
+                }
+
+                Swal.fire({
+                  icon: 'error',
+                  title: `<strong>Error</strong>`,
+                  text: message.error,
+                  //footer: request.responseText,
+                  showCloseButton: false,
+                  showCancelButton: false,
+                  focusConfirm: false,
+                  confirmButtonColor: '#248afd',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: 'Ok',
+                  cancelButtonText: 'No'
+                });
+              }
+            });
+
+          } 
+
+        });
+
+      });
+
+    </script>
+    
+
+  </body>
+
+</html>
